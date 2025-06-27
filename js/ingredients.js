@@ -1,5 +1,5 @@
 // Módulo para gestión de ingredientes
-export class IngredientsManager {
+class IngredientsManager {
     constructor() {
         this.ingredients = this.loadIngredients();
     }
@@ -51,7 +51,7 @@ export class IngredientsManager {
                 <div class="ingredient-card">
                     <h3>${ingredient.name}</h3>
                     <div class="ingredient-info">
-                        <span>Precio total:</span>
+                        <span>Precio de venta:</span>
                         <strong>$${ingredient.price.toFixed(2)}</strong>
                     </div>
                     <div class="ingredient-info">

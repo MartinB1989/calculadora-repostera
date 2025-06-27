@@ -171,7 +171,7 @@ class PastryCalculator {
                 <div class="ingredient-card">
                     <h3>${ingredient.name}</h3>
                     <div class="ingredient-info">
-                        <span>Precio total:</span>
+                        <span>Precio de venta:</span>
                         <strong>$${ingredient.price.toFixed(2)}</strong>
                     </div>
                     <div class="ingredient-info">
@@ -591,7 +591,7 @@ class PastryCalculator {
                     <div class="recipe-cost">
                         <div>
                             <span>Costo total: $${recipe.totalCost.toFixed(2)}</span>
-                            <strong>Precio total: $${recipe.finalPrice.toFixed(2)}</strong>
+                            <strong>Precio de venta: $${recipe.finalPrice.toFixed(2)}</strong>
                         </div>
                         ${recipe.yield > 1 ? `
                             <div style="margin-top: 0.5rem; font-size: 0.9em;">

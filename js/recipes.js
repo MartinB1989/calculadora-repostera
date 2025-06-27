@@ -1,5 +1,5 @@
 // Módulo para gestión de recetas
-export class RecipesManager {
+class RecipesManager {
     constructor() {
         this.recipes = this.loadRecipes();
     }
@@ -101,7 +101,7 @@ export class RecipesManager {
                     <div class="recipe-cost">
                         <div>
                             <span>Costo total: $${recipe.totalCost.toFixed(2)}</span>
-                            <strong>Precio total: $${recipe.finalPrice.toFixed(2)}</strong>
+                            <strong>Precio de venta: $${recipe.finalPrice.toFixed(2)}</strong>
                         </div>
                         ${recipe.yield > 1 ? `
                             <div style="margin-top: 0.5rem; font-size: 0.9em;">
