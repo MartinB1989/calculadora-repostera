@@ -1,0 +1,23 @@
+/*
+ * Calculadora Pastelera - Estilos Principales
+ * Arquitectura CSS modular para mejor mantenimiento
+ */
+
+/* Variables CSS - Tokens de diseño */
+@import 'variables.css';
+
+/* Reset y estilos base */
+@import 'reset.css';
+
+/* Componentes de layout */
+@import 'header.css';
+@import 'layout.css';
+
+/* Componentes UI */
+@import 'components.css';
+@import 'forms.css';
+@import 'cards.css';
+@import 'modals.css';
+
+/* Diseño responsivo */
+@import 'responsive.css'; 

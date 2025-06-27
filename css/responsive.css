@@ -1,0 +1,123 @@
+/* Diseño Responsivo */
+
+/* Tablets */
+@media (max-width: 768px) {
+    .header .container {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .nav-btn {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.9rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+
+    .quantity-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .ingredients-grid,
+    .recipes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ingredients-selection {
+        grid-template-columns: 1fr;
+    }
+
+    .page {
+        padding: var(--spacing-lg);
+    }
+}
+
+/* Móviles */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .page {
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+    }
+
+    .page-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .modal-content {
+        margin: var(--spacing-sm);
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: var(--spacing-md);
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .header h1 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .ingredient-card,
+    .recipe-card {
+        padding: var(--spacing-md);
+    }
+
+    .form-actions {
+        gap: var(--spacing-sm);
+    }
+
+    .empty-state {
+        padding: var(--spacing-xl) var(--spacing-sm);
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+    }
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 320px) {
+    .modal-content {
+        margin: var(--spacing-xs);
+        max-height: 95vh;
+    }
+
+    .page-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .ingredient-card h3,
+    .recipe-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        padding: 0.6rem var(--spacing-sm);
+        font-size: var(--font-size-small);
+    }
+} 
