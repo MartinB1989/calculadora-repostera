@@ -100,13 +100,13 @@ class RecipesManager {
                     </div>
                     <div class="recipe-cost">
                         <div>
-                            <span>Costo total: $${recipe.totalCost.toFixed(2)}</span>
-                            <strong>Precio de venta: $${recipe.finalPrice.toFixed(2)}</strong>
+                            <div>Costo total: $${recipe.totalCost.toFixed(2)}</div>
+                            <div><strong>Precio de venta: $${recipe.finalPrice.toFixed(2)}</strong></div>
                         </div>
                         ${recipe.yield > 1 ? `
                             <div style="margin-top: 0.5rem; font-size: 0.9em;">
-                                <span>Costo por ${recipe.unit === 'unidad' ? 'unidad' : recipe.unit}: $${recipe.costPerUnit.toFixed(2)}</span>
-                                <strong>Precio por ${recipe.unit === 'unidad' ? 'unidad' : recipe.unit}: $${recipe.pricePerUnit.toFixed(2)}</strong>
+                                <div>Costo por ${recipe.unit === 'unidad' ? 'unidad' : recipe.unit}: $${recipe.costPerUnit.toFixed(2)}</div>
+                                <div><strong>Precio por ${recipe.unit === 'unidad' ? 'unidad' : recipe.unit}: $${recipe.pricePerUnit.toFixed(2)}</strong></div>
                             </div>
                         ` : ''}
                     </div>
@@ -165,7 +165,7 @@ class RecipesManager {
                 <span>$${scaledProfit.toFixed(2)}</span>
             </div>
             <div class="result-item">
-                <span><strong>Precio final sugerido:</strong></span>
+                <span><strong>Precio de venta sugerido:</strong></span>
                 <span><strong>$${scaledFinalPrice.toFixed(2)}</strong></span>
             </div>
         `;
@@ -177,13 +177,13 @@ class RecipesManager {
             
             resultsHTML += `
                 <hr style="margin: 1rem 0;">
-                <h5>Costo por unidad:</h5>
+                <h5>Por unidad:</h5>
                 <div class="result-item">
                     <span>Costo por ${recipeData.unit === 'unidad' ? 'unidad' : recipeData.unit}:</span>
                     <span>$${costPerUnit.toFixed(2)}</span>
                 </div>
                 <div class="result-item">
-                    <span><strong>Precio de venta por ${recipeData.unit === 'unidad' ? 'unidad' : recipeData.unit}:</strong></span>
+                    <span><strong>Precio por ${recipeData.unit === 'unidad' ? 'unidad' : recipeData.unit}:</strong></span>
                     <span><strong>$${pricePerUnit.toFixed(2)}</strong></span>
                 </div>
             `;
