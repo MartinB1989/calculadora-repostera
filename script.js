@@ -6,11 +6,16 @@ class PastryCalculator {
         this.currentStep = 1;
         this.currentRecipe = {
             name: '',
+            description: '',
+            yield: 1,
+            unit: 'unidad',
             ingredients: [],
             quantities: {},
             profitMargin: 0,
             cost: 0,
-            finalPrice: 0
+            profit: 0,
+            finalPrice: 0,
+            scaleQuantity: null
         };
         
         this.init();
@@ -48,6 +53,17 @@ class PastryCalculator {
             this.closeRecipeModal();
         });
 
+        // Scale modal
+        document.querySelectorAll('.scale-modal-close').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.closeScaleModal();
+            });
+        });
+
+        document.getElementById('calculate-scale').addEventListener('click', () => {
+            this.calculateScaledRecipe();
+        });
+
         // Navegación de pasos en el modal
         document.getElementById('next-step').addEventListener('click', () => {
             this.nextStep();
@@ -69,6 +85,12 @@ class PastryCalculator {
         document.getElementById('recipe-modal').addEventListener('click', (e) => {
             if (e.target.id === 'recipe-modal') {
                 this.closeRecipeModal();
+            }
+        });
+
+        document.getElementById('scale-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'scale-modal') {
+                this.closeScaleModal();
             }
         });
     }
@@ -180,12 +202,16 @@ class PastryCalculator {
         this.currentStep = 1;
         this.currentRecipe = {
             name: '',
+            description: '',
+            yield: 1,
+            unit: 'unidad',
             ingredients: [],
             quantities: {},
             profitMargin: 0,
             cost: 0,
             profit: 0,
-            finalPrice: 0
+            finalPrice: 0,
+            scaleQuantity: null
         };
 
         document.getElementById('recipe-modal').classList.add('active');
@@ -195,7 +221,17 @@ class PastryCalculator {
     closeRecipeModal() {
         document.getElementById('recipe-modal').classList.remove('active');
         document.getElementById('recipe-name').value = '';
-        document.getElementById('profit-margin').value = '20'; // Restablecer al valor predeterminado
+        document.getElementById('recipe-description').value = '';
+        document.getElementById('recipe-yield').value = '1';
+        document.getElementById('recipe-unit').value = 'unidad';
+        document.getElementById('profit-margin').value = '20';
+        document.getElementById('scale-quantity').value = '';
+    }
+
+    closeScaleModal() {
+        document.getElementById('scale-modal').classList.remove('active');
+        document.getElementById('scale-target-quantity').value = '';
+        document.getElementById('scale-results').innerHTML = '';
     }
 
     nextStep() {
@@ -221,16 +257,16 @@ class PastryCalculator {
 
         // Actualizar botones
         document.getElementById('prev-step').style.display = this.currentStep > 1 ? 'inline-flex' : 'none';
-        document.getElementById('next-step').style.display = this.currentStep < 5 ? 'inline-flex' : 'none';
-        document.getElementById('calculate-recipe').style.display = this.currentStep === 4 ? 'inline-flex' : 'none';
-        document.getElementById('save-recipe').style.display = this.currentStep === 5 ? 'inline-flex' : 'none';
+        document.getElementById('next-step').style.display = this.currentStep < 6 ? 'inline-flex' : 'none';
+        document.getElementById('calculate-recipe').style.display = this.currentStep === 5 ? 'inline-flex' : 'none';
+        document.getElementById('save-recipe').style.display = this.currentStep === 6 ? 'inline-flex' : 'none';
 
         // Cargar contenido específico del paso
         this.loadStepContent();
     }
 
     getStepName() {
-        const steps = ['name', 'ingredients', 'quantities', 'profit', 'results'];
+        const steps = ['info', 'ingredients', 'quantities', 'profit', 'scale', 'results'];
         return steps[this.currentStep - 1];
     }
 
@@ -249,11 +285,23 @@ class PastryCalculator {
         switch (this.currentStep) {
             case 1:
                 const recipeName = document.getElementById('recipe-name').value.trim();
+                const description = document.getElementById('recipe-description').value.trim();
+                const yield_ = parseFloat(document.getElementById('recipe-yield').value);
+                const unit = document.getElementById('recipe-unit').value;
+                
                 if (!recipeName) {
                     this.showAlert('Por favor, ingresa el nombre de la receta', 'error');
                     return false;
                 }
+                if (!yield_ || yield_ <= 0) {
+                    this.showAlert('Por favor, ingresa una cantidad válida que produce la receta', 'error');
+                    return false;
+                }
+                
                 this.currentRecipe.name = recipeName;
+                this.currentRecipe.description = description;
+                this.currentRecipe.yield = yield_;
+                this.currentRecipe.unit = unit;
                 return true;
 
             case 2:
@@ -297,7 +345,22 @@ class PastryCalculator {
                 }
                 
                 this.currentRecipe.profitMargin = profitMargin;
-                console.log('Validación paso 4 - Porcentaje de ganancia:', profitMargin);
+                return true;
+
+            case 5:
+                // Este paso es opcional, solo capturamos el valor si existe
+                const scaleQuantityInput = document.getElementById('scale-quantity').value;
+                let scaleQuantity = null;
+                
+                if (scaleQuantityInput && scaleQuantityInput.trim() !== '') {
+                    scaleQuantity = parseFloat(scaleQuantityInput);
+                    if (isNaN(scaleQuantity) || scaleQuantity <= 0) {
+                        this.showAlert('Por favor, ingresa una cantidad válida para escalar', 'error');
+                        return false;
+                    }
+                }
+                
+                this.currentRecipe.scaleQuantity = scaleQuantity;
                 return true;
 
             default:
@@ -350,7 +413,7 @@ class PastryCalculator {
     calculateRecipe() {
         let totalCost = 0;
 
-        // Calcular costo total
+        // Calcular costo total para la receta original
         this.currentRecipe.ingredients.forEach(ingredientId => {
             const ingredient = this.ingredients.find(ing => ing.id === ingredientId);
             const usedQuantity = this.currentRecipe.quantities[ingredientId];
@@ -360,30 +423,20 @@ class PastryCalculator {
 
         this.currentRecipe.cost = totalCost;
         
-        // Obtener el porcentaje de ganancia directamente del input para asegurar que sea el valor actual
+        // Obtener el porcentaje de ganancia
         const profitMarginInput = document.getElementById('profit-margin').value;
         let profitMargin = parseFloat(profitMarginInput);
         
-        // Si el campo está vacío o es NaN, usar 0
         if (isNaN(profitMargin) || profitMarginInput === '' || profitMarginInput === null) {
             profitMargin = 0;
         }
         
-        // Actualizar el valor en el objeto de receta
         this.currentRecipe.profitMargin = profitMargin;
         
         // Calcular ganancia y precio final
         const profitAmount = totalCost * (profitMargin / 100);
         this.currentRecipe.profit = profitAmount;
         this.currentRecipe.finalPrice = totalCost + profitAmount;
-
-        console.log('Cálculo de receta:', {
-            costoTotal: totalCost,
-            porcentajeGanancia: profitMargin,
-            cantidadGanancia: profitAmount,
-            precioFinal: this.currentRecipe.finalPrice,
-            inputValue: profitMarginInput
-        });
 
         this.displayResults();
         this.nextStep();
@@ -395,34 +448,71 @@ class PastryCalculator {
             this.ingredients.find(ing => ing.id === id)
         );
 
-        let resultsHTML = '<h4>Desglose de costos:</h4>';
+        // Determinar si estamos escalando la receta
+        const isScaled = this.currentRecipe.scaleQuantity !== null && this.currentRecipe.scaleQuantity !== this.currentRecipe.yield;
+        const scale = isScaled ? this.currentRecipe.scaleQuantity / this.currentRecipe.yield : 1;
+        const targetQuantity = isScaled ? this.currentRecipe.scaleQuantity : this.currentRecipe.yield;
+        
+        let resultsHTML = `<h4>Receta: ${this.currentRecipe.name}</h4>`;
+        
+        if (isScaled) {
+            resultsHTML += `<p><strong>Calculando para ${targetQuantity} ${this.currentRecipe.unit === 'unidad' ? 'unidades' : this.currentRecipe.unit}</strong></p>`;
+        } else {
+            resultsHTML += `<p><strong>Cantidad original: ${this.currentRecipe.yield} ${this.currentRecipe.unit === 'unidad' ? 'unidades' : this.currentRecipe.unit}</strong></p>`;
+        }
+
+        resultsHTML += '<h5>Desglose de ingredientes:</h5>';
         
         selectedIngredients.forEach(ingredient => {
-            const usedQuantity = this.currentRecipe.quantities[ingredient.id];
-            const cost = ingredient.pricePerUnit * usedQuantity;
+            const originalQuantity = this.currentRecipe.quantities[ingredient.id];
+            const scaledQuantity = originalQuantity * scale;
+            const cost = ingredient.pricePerUnit * scaledQuantity;
             
             resultsHTML += `
                 <div class="result-item">
-                    <span>${ingredient.name} (${usedQuantity} ${ingredient.unit})</span>
+                    <span>${ingredient.name} (${scaledQuantity.toFixed(2)} ${ingredient.unit})</span>
                     <span>$${cost.toFixed(2)}</span>
                 </div>
             `;
         });
 
+        const scaledCost = this.currentRecipe.cost * scale;
+        const scaledProfit = this.currentRecipe.profit * scale;
+        const scaledFinalPrice = this.currentRecipe.finalPrice * scale;
+
         resultsHTML += `
             <div class="result-item">
                 <span>Costo total de ingredientes:</span>
-                <span>$${this.currentRecipe.cost.toFixed(2)}</span>
+                <span>$${scaledCost.toFixed(2)}</span>
             </div>
             <div class="result-item">
                 <span>Ganancia (${this.currentRecipe.profitMargin}%):</span>
-                <span>$${this.currentRecipe.profit.toFixed(2)}</span>
+                <span>$${scaledProfit.toFixed(2)}</span>
             </div>
             <div class="result-item">
                 <span><strong>Precio final sugerido:</strong></span>
-                <span><strong>$${this.currentRecipe.finalPrice.toFixed(2)}</strong></span>
+                <span><strong>$${scaledFinalPrice.toFixed(2)}</strong></span>
             </div>
         `;
+
+        // Mostrar costo por unidad si la receta produce múltiples unidades
+        if (targetQuantity > 1) {
+            const costPerUnit = scaledCost / targetQuantity;
+            const pricePerUnit = scaledFinalPrice / targetQuantity;
+            
+            resultsHTML += `
+                <hr style="margin: 1rem 0;">
+                <h5>Costo por unidad:</h5>
+                <div class="result-item">
+                    <span>Costo por ${this.currentRecipe.unit === 'unidad' ? 'unidad' : this.currentRecipe.unit}:</span>
+                    <span>$${costPerUnit.toFixed(2)}</span>
+                </div>
+                <div class="result-item">
+                    <span><strong>Precio de venta por ${this.currentRecipe.unit === 'unidad' ? 'unidad' : this.currentRecipe.unit}:</strong></span>
+                    <span><strong>$${pricePerUnit.toFixed(2)}</strong></span>
+                </div>
+            `;
+        }
 
         container.innerHTML = resultsHTML;
     }
@@ -431,6 +521,9 @@ class PastryCalculator {
         const recipe = {
             id: Date.now(),
             name: this.currentRecipe.name,
+            description: this.currentRecipe.description,
+            yield: this.currentRecipe.yield,
+            unit: this.currentRecipe.unit,
             ingredients: this.currentRecipe.ingredients.map(id => {
                 const ingredient = this.ingredients.find(ing => ing.id === id);
                 return {
@@ -445,6 +538,8 @@ class PastryCalculator {
             totalCost: this.currentRecipe.cost,
             profit: this.currentRecipe.profit,
             finalPrice: this.currentRecipe.finalPrice,
+            costPerUnit: this.currentRecipe.cost / this.currentRecipe.yield,
+            pricePerUnit: this.currentRecipe.finalPrice / this.currentRecipe.yield,
             createdAt: new Date().toISOString()
         };
 
@@ -475,29 +570,47 @@ class PastryCalculator {
             return;
         }
 
-        grid.innerHTML = this.recipes.map(recipe => `
-            <div class="recipe-card">
-                <h3>${recipe.name}</h3>
-                <div class="recipe-ingredients">
-                    <h4>Ingredientes:</h4>
-                    <ul>
-                        ${recipe.ingredients.map(ing => {
-                            const unitDisplay = ing.unit === 'unidad' ? 'unidades' : ing.unit;
-                            return `<li>${ing.name} (${ing.quantity} ${unitDisplay})</li>`;
-                        }).join('')}
-                    </ul>
+        grid.innerHTML = this.recipes.map(recipe => {
+            const unitDisplay = recipe.unit === 'unidad' ? 'unidades' : recipe.unit;
+            return `
+                <div class="recipe-card">
+                    <h3>${recipe.name}</h3>
+                    ${recipe.description ? `<p class="recipe-description">${recipe.description}</p>` : ''}
+                    <div class="recipe-yield">
+                        <strong>Rinde: ${recipe.yield} ${unitDisplay}</strong>
+                    </div>
+                    <div class="recipe-ingredients">
+                        <h4>Ingredientes:</h4>
+                        <ul>
+                            ${recipe.ingredients.map(ing => {
+                                const ingUnitDisplay = ing.unit === 'unidad' ? 'unidades' : ing.unit;
+                                return `<li>${ing.name} (${ing.quantity} ${ingUnitDisplay})</li>`;
+                            }).join('')}
+                        </ul>
+                    </div>
+                    <div class="recipe-cost">
+                        <div>
+                            <span>Costo total: $${recipe.totalCost.toFixed(2)}</span>
+                            <strong>Precio total: $${recipe.finalPrice.toFixed(2)}</strong>
+                        </div>
+                        ${recipe.yield > 1 ? `
+                            <div style="margin-top: 0.5rem; font-size: 0.9em;">
+                                <span>Costo por ${recipe.unit === 'unidad' ? 'unidad' : recipe.unit}: $${recipe.costPerUnit.toFixed(2)}</span>
+                                <strong>Precio por ${recipe.unit === 'unidad' ? 'unidad' : recipe.unit}: $${recipe.pricePerUnit.toFixed(2)}</strong>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="recipe-actions" style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <button class="btn btn-sm btn-primary" onclick="app.openScaleModal(${recipe.id})" title="Calcular para otra cantidad">
+                            <i class="fas fa-calculator"></i> Calcular
+                        </button>
+                        <button class="btn-icon" onclick="app.deleteRecipe(${recipe.id})" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="recipe-cost">
-                    <span>Costo: $${recipe.totalCost.toFixed(2)}</span>
-                    <strong>Precio: $${recipe.finalPrice.toFixed(2)}</strong>
-                </div>
-                <div class="ingredient-actions" style="margin-top: 1rem;">
-                    <button class="btn-icon" onclick="app.deleteRecipe(${recipe.id})" title="Eliminar">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     // Estados vacíos
@@ -526,6 +639,94 @@ class PastryCalculator {
     loadRecipes() {
         const saved = localStorage.getItem('pastry-recipes');
         return saved ? JSON.parse(saved) : [];
+    }
+
+    // Modal de escalado
+    openScaleModal(recipeId) {
+        const recipe = this.recipes.find(r => r.id === recipeId);
+        if (!recipe) return;
+
+        document.getElementById('scale-modal-title').textContent = `Calcular: ${recipe.name}`;
+        
+        const unitDisplay = recipe.unit === 'unidad' ? 'unidades' : recipe.unit;
+        document.getElementById('scale-recipe-info').innerHTML = `
+            <div class="recipe-info-summary">
+                <h4>${recipe.name}</h4>
+                ${recipe.description ? `<p>${recipe.description}</p>` : ''}
+                <p><strong>Receta original rinde:</strong> ${recipe.yield} ${unitDisplay}</p>
+                <p><strong>Costo por ${recipe.unit === 'unidad' ? 'unidad' : recipe.unit}:</strong> $${recipe.costPerUnit.toFixed(2)}</p>
+                <p><strong>Precio por ${recipe.unit === 'unidad' ? 'unidad' : recipe.unit}:</strong> $${recipe.pricePerUnit.toFixed(2)}</p>
+            </div>
+        `;
+
+        document.getElementById('scale-target-quantity').placeholder = recipe.yield;
+        document.getElementById('scale-modal').classList.add('active');
+        document.getElementById('scale-modal').dataset.recipeId = recipeId;
+    }
+
+    calculateScaledRecipe() {
+        const recipeId = parseInt(document.getElementById('scale-modal').dataset.recipeId);
+        const recipe = this.recipes.find(r => r.id === recipeId);
+        const targetQuantity = parseFloat(document.getElementById('scale-target-quantity').value);
+
+        if (!targetQuantity || targetQuantity <= 0) {
+            this.showAlert('Por favor, ingresa una cantidad válida', 'error');
+            return;
+        }
+
+        const scale = targetQuantity / recipe.yield;
+        const scaledCost = recipe.totalCost * scale;
+        const scaledPrice = recipe.finalPrice * scale;
+
+        const unitDisplay = recipe.unit === 'unidad' ? 'unidades' : recipe.unit;
+        
+        let resultsHTML = `
+            <h4>Resultado para ${targetQuantity} ${unitDisplay}</h4>
+            <div class="scale-calculation">
+                <h5>Ingredientes necesarios:</h5>
+        `;
+
+        recipe.ingredients.forEach(ingredient => {
+            const scaledQuantity = ingredient.quantity * scale;
+            const ingUnitDisplay = ingredient.unit === 'unidad' ? 'unidades' : ingredient.unit;
+            resultsHTML += `
+                <div class="result-item">
+                    <span>${ingredient.name}</span>
+                    <span>${scaledQuantity.toFixed(2)} ${ingUnitDisplay}</span>
+                </div>
+            `;
+        });
+
+        resultsHTML += `
+                <hr style="margin: 1rem 0;">
+                <h5>Costos:</h5>
+                <div class="result-item">
+                    <span>Costo total de ingredientes:</span>
+                    <span>$${scaledCost.toFixed(2)}</span>
+                </div>
+                <div class="result-item">
+                    <span><strong>Precio de venta total:</strong></span>
+                    <span><strong>$${scaledPrice.toFixed(2)}</strong></span>
+                </div>
+        `;
+
+        if (targetQuantity > 1) {
+            resultsHTML += `
+                <hr style="margin: 1rem 0;">
+                <h5>Por unidad:</h5>
+                <div class="result-item">
+                    <span>Costo por ${recipe.unit === 'unidad' ? 'unidad' : recipe.unit}:</span>
+                    <span>$${recipe.costPerUnit.toFixed(2)}</span>
+                </div>
+                <div class="result-item">
+                    <span><strong>Precio por ${recipe.unit === 'unidad' ? 'unidad' : recipe.unit}:</strong></span>
+                    <span><strong>$${recipe.pricePerUnit.toFixed(2)}</strong></span>
+                </div>
+            `;
+        }
+
+        resultsHTML += '</div>';
+        document.getElementById('scale-results').innerHTML = resultsHTML;
     }
 
     // Notificaciones
@@ -579,4 +780,8 @@ function deleteIngredient(id) {
 
 function deleteRecipe(id) {
     window.app.deleteRecipe(id);
+}
+
+function openScaleModal(id) {
+    window.app.openScaleModal(id);
 } 

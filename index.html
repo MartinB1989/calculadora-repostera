@@ -113,6 +113,34 @@
                 </div>
             </div>
 
+            <!-- Recipe Scale Modal -->
+            <div id="scale-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="scale-modal-title">Calcular Receta</h3>
+                        <button class="modal-close scale-modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="scale-recipe-info"></div>
+                        <div class="form-group">
+                            <label for="scale-target-quantity">¿Para cuántas unidades quieres calcular?</label>
+                            <input type="number" id="scale-target-quantity" step="0.01" min="0.01" placeholder="1">
+                        </div>
+                        <div id="scale-results" class="scale-results">
+                            <!-- Los resultados escalados se mostrarán aquí -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="calculate-scale" class="btn btn-primary">
+                            <i class="fas fa-calculator"></i> Calcular
+                        </button>
+                        <button class="btn btn-secondary scale-modal-close">
+                            <i class="fas fa-times"></i> Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Recipe Creation Modal -->
             <div id="recipe-modal" class="modal">
                 <div class="modal-content">
@@ -121,12 +149,34 @@
                         <button class="modal-close">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <!-- Step 1: Recipe Name -->
-                        <div id="step-name" class="step active">
-                            <h4>Paso 1: Nombre de la receta</h4>
+                        <!-- Step 1: Recipe Info -->
+                        <div id="step-info" class="step active">
+                            <h4>Paso 1: Información de la receta</h4>
                             <div class="form-group">
                                 <label for="recipe-name">Nombre de la receta</label>
                                 <input type="text" id="recipe-name" placeholder="Ej: Torta de chocolate">
+                            </div>
+                            <div class="form-group">
+                                <label for="recipe-description">Descripción (opcional)</label>
+                                <textarea id="recipe-description" placeholder="Describe tu receta..." rows="3"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="recipe-yield">Cantidad que produce</label>
+                                    <input type="number" id="recipe-yield" step="0.01" min="1" placeholder="1" value="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="recipe-unit">Unidad</label>
+                                    <select id="recipe-unit">
+                                        <option value="unidad">Unidad</option>
+                                        <option value="kg">Kilogramo (kg)</option>
+                                        <option value="g">Gramo (g)</option>
+                                        <option value="l">Litro (l)</option>
+                                        <option value="ml">Mililitro (ml)</option>
+                                        <option value="porcion">Porción</option>
+                                        <option value="rebanada">Rebanada</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -155,7 +205,19 @@
                             </div>
                         </div>
 
-                        <!-- Step 5: Results -->
+                        <!-- Step 5: Scale Recipe -->
+                        <div id="step-scale" class="step">
+                            <h4>Paso 5: Calcular para cantidad diferente (opcional)</h4>
+                            <div class="form-group">
+                                <label for="scale-quantity">¿Para cuántas unidades quieres calcular?</label>
+                                <input type="number" id="scale-quantity" step="0.01" min="0.01" placeholder="1">
+                            </div>
+                            <p class="scale-info">
+                                <small>Deja vacío si quieres calcular para la cantidad original de la receta</small>
+                            </p>
+                        </div>
+
+                        <!-- Step 6: Results -->
                         <div id="step-results" class="step">
                             <h4>Resultado del cálculo</h4>
                             <div id="recipe-results" class="recipe-results">
