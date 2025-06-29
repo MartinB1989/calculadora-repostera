@@ -18,6 +18,7 @@ class RecipesManager {
             finalPrice: recipeData.finalPrice,
             costPerUnit: recipeData.totalCost / recipeData.yield,
             pricePerUnit: recipeData.finalPrice / recipeData.yield,
+            moldData: recipeData.moldData || null,
             createdAt: new Date().toISOString()
         };
 
@@ -82,6 +83,21 @@ class RecipesManager {
 
         return this.recipes.map(recipe => {
             const unitDisplay = recipe.unit === 'unidad' ? 'unidades' : recipe.unit;
+            
+            // Agregar información del molde si existe
+            let moldInfo = '';
+            if (recipe.moldData && window.app && window.app.uiManager && window.app.uiManager.volumeCalculator) {
+                const volumeCalculator = window.app.uiManager.volumeCalculator;
+                const moldDescription = volumeCalculator.getMoldDescription(recipe.moldData);
+                const moldVolume = volumeCalculator.calculateVolume(recipe.moldData);
+                moldInfo = `
+                    <div class="mold-info">
+                        <i class="fas fa-cube"></i> ${moldDescription}
+                        <div class="volume-info">Volumen: ${moldVolume.toLocaleString()} cm³</div>
+                    </div>
+                `;
+            }
+            
             return `
                 <div class="recipe-card">
                     <h3>${recipe.name}</h3>
@@ -89,6 +105,7 @@ class RecipesManager {
                     <div class="recipe-yield">
                         <strong>Rinde: ${recipe.yield} ${unitDisplay}</strong>
                     </div>
+                    ${moldInfo}
                     <div class="recipe-ingredients">
                         <h4>Ingredientes:</h4>
                         <ul>

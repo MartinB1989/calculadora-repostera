@@ -6,26 +6,40 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     z-index: 1000;
     padding: var(--spacing-md);
     overflow-y: auto;
+    backdrop-filter: blur(2px);
 }
 
 .modal.active {
     display: flex;
     align-items: center;
     justify-content: center;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .modal-content {
-    background: var(--bg-white);
+    background: var(--background-color);
     border-radius: var(--border-radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
     width: 100%;
     max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
     animation: modalSlideIn 0.3s ease;
+    position: relative;
 }
 
 .modal-header {
@@ -70,7 +84,7 @@
 
 /* Resultados de recetas */
 .recipe-results {
-    background: var(--bg-light);
+    background: var(--background-light);
     border-radius: var(--border-radius);
     padding: var(--spacing-lg);
 }
@@ -96,7 +110,7 @@
 
 /* Modal de escala */
 .recipe-info-summary {
-    background: var(--bg-light);
+    background: var(--background-light);
     padding: var(--spacing-md);
     border-radius: var(--border-radius);
     margin-bottom: var(--spacing-lg);

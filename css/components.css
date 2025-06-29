@@ -87,4 +87,215 @@
     color: var(--text-dark);
     margin-bottom: var(--spacing-lg);
     font-size: 1.3rem;
+}
+
+/* Mold Configuration Styles */
+.mold-config {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.form-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-checkbox input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.form-checkbox label {
+    margin: 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.mold-dimensions {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: var(--background-color);
+    border-radius: 6px;
+    border: 1px solid var(--border-light);
+}
+
+.calculated-volume {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: var(--primary-light);
+    border-radius: 6px;
+    border: 1px solid var(--primary-color);
+}
+
+.volume-result {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-dark);
+    font-weight: 500;
+}
+
+.volume-result i {
+    color: var(--primary-color);
+}
+
+.volume-comparison {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--primary-color);
+}
+
+.volume-scale-factor {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-dark);
+    font-weight: 500;
+}
+
+.volume-scale-factor i {
+    color: var(--success-color);
+}
+
+/* Scale Modal Improvements */
+.scale-options {
+    margin-bottom: 1.5rem;
+}
+
+.scale-method-options {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.form-radio {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-radio input[type="radio"] {
+    width: auto;
+    margin: 0;
+}
+
+.form-radio label {
+    margin: 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.scale-section {
+    padding: 1rem;
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.new-mold-dimensions {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: var(--background-color);
+    border-radius: 6px;
+    border: 1px solid var(--border-light);
+}
+
+/* Step Description */
+.step-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background-color: var(--background-light);
+    border-radius: 6px;
+    border-left: 3px solid var(--primary-color);
+}
+
+/* Enhanced Recipe Cards */
+.recipe-card .mold-info {
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    background-color: var(--background-light);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.recipe-card .mold-info i {
+    color: var(--primary-color);
+    margin-right: 0.25rem;
+}
+
+.recipe-card .volume-info {
+    margin-top: 0.25rem;
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+
+/* Volume Scaling Results */
+.volume-scaling-info {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: var(--background-light);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.mold-comparison {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.mold-item {
+    padding: 0.5rem;
+    background-color: var(--surface-color);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.scale-factor-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: var(--success-light);
+    border-radius: 6px;
+    border: 1px solid var(--success-color);
+    color: var(--success-dark);
+    font-weight: 600;
+}
+
+.scale-factor-display i {
+    color: var(--success-color);
+    font-size: 1.1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .scale-method-options {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .mold-config, .scale-section {
+        padding: 0.75rem;
+    }
+    
+    .volume-scaling-info {
+        padding: 0.75rem;
+    }
+    
+    .mold-comparison {
+        gap: 0.5rem;
+    }
 } 

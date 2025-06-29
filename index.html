@@ -122,10 +122,103 @@
                     </div>
                     <div class="modal-body">
                         <div id="scale-recipe-info"></div>
-                        <div class="form-group">
-                            <label for="scale-target-quantity">¿Para cuántas unidades quieres calcular?</label>
-                            <input type="number" id="scale-target-quantity" step="0.01" min="0.01" placeholder="1">
+                        
+                        <div class="scale-options">
+                            <div class="form-group">
+                                <label>¿Cómo quieres calcular?</label>
+                                <div class="scale-method-options">
+                                    <div class="form-radio">
+                                        <input type="radio" id="scale-by-quantity" name="scale-method" value="quantity" checked>
+                                        <label for="scale-by-quantity">Por cantidad</label>
+                                    </div>
+                                    <div class="form-radio" id="scale-by-volume-option" style="display: none;">
+                                        <input type="radio" id="scale-by-volume" name="scale-method" value="volume">
+                                        <label for="scale-by-volume">Por tamaño de molde</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Escalado por cantidad -->
+                            <div id="quantity-scale-section" class="scale-section">
+                                <div class="form-group">
+                                    <label for="scale-target-quantity">¿Para cuántas unidades quieres calcular?</label>
+                                    <input type="number" id="scale-target-quantity" step="0.01" min="0.01" placeholder="1">
+                                </div>
+                            </div>
+
+                            <!-- Escalado por volumen -->
+                            <div id="volume-scale-section" class="scale-section" style="display: none;">
+                                <div class="form-group">
+                                    <label for="new-mold-type">Tipo de molde nuevo</label>
+                                    <select id="new-mold-type">
+                                        <option value="">Seleccionar tipo</option>
+                                        <option value="circular">Circular</option>
+                                        <option value="rectangular">Rectangular</option>
+                                        <option value="cuadrado">Cuadrado</option>
+                                    </select>
+                                </div>
+
+                                <!-- Nuevo Molde Circular -->
+                                <div id="new-circular-mold" class="new-mold-dimensions" style="display: none;">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="new-circular-diameter">Diámetro (cm)</label>
+                                            <input type="number" id="new-circular-diameter" step="0.1" min="0.1" placeholder="24">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="new-circular-height">Alto (cm)</label>
+                                            <input type="number" id="new-circular-height" step="0.1" min="0.1" placeholder="5">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Nuevo Molde Rectangular -->
+                                <div id="new-rectangular-mold" class="new-mold-dimensions" style="display: none;">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="new-rectangular-length">Largo (cm)</label>
+                                            <input type="number" id="new-rectangular-length" step="0.1" min="0.1" placeholder="24">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="new-rectangular-width">Ancho (cm)</label>
+                                            <input type="number" id="new-rectangular-width" step="0.1" min="0.1" placeholder="16">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="new-rectangular-height">Alto (cm)</label>
+                                            <input type="number" id="new-rectangular-height" step="0.1" min="0.1" placeholder="5">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Nuevo Molde Cuadrado -->
+                                <div id="new-square-mold" class="new-mold-dimensions" style="display: none;">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="new-square-side">Lado (cm)</label>
+                                            <input type="number" id="new-square-side" step="0.1" min="0.1" placeholder="20">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="new-square-height">Alto (cm)</label>
+                                            <input type="number" id="new-square-height" step="0.1" min="0.1" placeholder="5">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="new-calculated-volume" class="calculated-volume" style="display: none;">
+                                    <div class="volume-result">
+                                        <i class="fas fa-cube"></i>
+                                        <span>Volumen nuevo: <strong id="new-volume-value">0</strong> cm³</span>
+                                    </div>
+                                    <div class="volume-comparison" id="volume-comparison" style="display: none;">
+                                        <div class="volume-scale-factor">
+                                            <i class="fas fa-arrows-alt"></i>
+                                            <span>Factor de escala: <strong id="volume-scale-factor">1.0</strong>x</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                         <div id="scale-results" class="scale-results">
                             <!-- Los resultados escalados se mostrarán aquí -->
                         </div>
@@ -180,34 +273,113 @@
                             </div>
                         </div>
 
-                        <!-- Step 2: Select Ingredients -->
+                        <!-- Step 2: Mold Dimensions -->
+                        <div id="step-mold" class="step">
+                            <h4>Paso 2: Dimensiones del molde (opcional)</h4>
+                            <p class="step-description">Si agregas las dimensiones del molde, podrás calcular automáticamente las cantidades para otros tamaños de molde.</p>
+                            
+                            <div class="form-group">
+                                <label for="mold-enabled">¿Quieres agregar dimensiones del molde?</label>
+                                <div class="form-checkbox">
+                                    <input type="checkbox" id="mold-enabled">
+                                    <label for="mold-enabled">Sí, agregar dimensiones del molde</label>
+                                </div>
+                            </div>
+
+                            <div id="mold-config" class="mold-config" style="display: none;">
+                                <div class="form-group">
+                                    <label for="mold-type">Tipo de molde</label>
+                                    <select id="mold-type">
+                                        <option value="">Seleccionar tipo</option>
+                                        <option value="circular">Circular</option>
+                                        <option value="rectangular">Rectangular</option>
+                                        <option value="cuadrado">Cuadrado</option>
+                                    </select>
+                                </div>
+
+                                <!-- Molde Circular -->
+                                <div id="circular-mold" class="mold-dimensions" style="display: none;">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="circular-diameter">Diámetro (cm)</label>
+                                            <input type="number" id="circular-diameter" step="0.1" min="0.1" placeholder="24">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="circular-height">Alto (cm)</label>
+                                            <input type="number" id="circular-height" step="0.1" min="0.1" placeholder="5">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Molde Rectangular -->
+                                <div id="rectangular-mold" class="mold-dimensions" style="display: none;">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="rectangular-length">Largo (cm)</label>
+                                            <input type="number" id="rectangular-length" step="0.1" min="0.1" placeholder="24">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="rectangular-width">Ancho (cm)</label>
+                                            <input type="number" id="rectangular-width" step="0.1" min="0.1" placeholder="16">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="rectangular-height">Alto (cm)</label>
+                                            <input type="number" id="rectangular-height" step="0.1" min="0.1" placeholder="5">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Molde Cuadrado -->
+                                <div id="square-mold" class="mold-dimensions" style="display: none;">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="square-side">Lado (cm)</label>
+                                            <input type="number" id="square-side" step="0.1" min="0.1" placeholder="20">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="square-height">Alto (cm)</label>
+                                            <input type="number" id="square-height" step="0.1" min="0.1" placeholder="5">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="calculated-volume" class="calculated-volume" style="display: none;">
+                                    <div class="volume-result">
+                                        <i class="fas fa-cube"></i>
+                                        <span>Volumen calculado: <strong id="volume-value">0</strong> cm³</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Select Ingredients -->
                         <div id="step-ingredients" class="step">
-                            <h4>Paso 2: Selecciona los ingredientes</h4>
+                            <h4>Paso 3: Selecciona los ingredientes</h4>
                             <div id="ingredients-list" class="ingredients-selection">
                                 <!-- Los ingredientes disponibles se cargarán aquí -->
                             </div>
                         </div>
 
-                        <!-- Step 3: Set Quantities -->
+                        <!-- Step 4: Set Quantities -->
                         <div id="step-quantities" class="step">
-                            <h4>Paso 3: Define las cantidades</h4>
+                            <h4>Paso 4: Define las cantidades</h4>
                             <div id="quantities-form" class="quantities-form">
                                 <!-- Los campos de cantidad se cargarán aquí -->
                             </div>
                         </div>
 
-                        <!-- Step 4: Profit Margin -->
+                        <!-- Step 5: Profit Margin -->
                         <div id="step-profit" class="step">
-                            <h4>Paso 4: Porcentaje de ganancia</h4>
+                            <h4>Paso 5: Porcentaje de ganancia</h4>
                             <div class="form-group">
                                 <label for="profit-margin">Porcentaje de ganancia (%)</label>
                                 <input type="number" id="profit-margin" min="0" step="0.1" placeholder="20" value="20">
                             </div>
                         </div>
 
-                        <!-- Step 5: Scale Recipe -->
+                        <!-- Step 6: Scale Recipe -->
                         <div id="step-scale" class="step">
-                            <h4>Paso 5: Calcular para cantidad diferente (opcional)</h4>
+                            <h4>Paso 6: Calcular para cantidad diferente (opcional)</h4>
                             <div class="form-group">
                                 <label for="scale-quantity">¿Para cuántas unidades quieres calcular?</label>
                                 <input type="number" id="scale-quantity" step="0.01" min="0.01" placeholder="1">
@@ -217,7 +389,7 @@
                             </p>
                         </div>
 
-                        <!-- Step 6: Results -->
+                        <!-- Step 7: Results -->
                         <div id="step-results" class="step">
                             <h4>Resultado del cálculo</h4>
                             <div id="recipe-results" class="recipe-results">
@@ -246,6 +418,7 @@
 
     <script src="js/ingredients.js"></script>
     <script src="js/recipes.js"></script>
+    <script src="js/volume-calculator.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
 </body>
