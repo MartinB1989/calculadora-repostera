@@ -276,6 +276,47 @@
     font-size: 1.1rem;
 }
 
+.quantity-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: var(--primary-light);
+    border-radius: 6px;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.quantity-info i {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+/* Volume Quantity Section */
+.volume-quantity-section {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: var(--background-light);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.volume-quantity-section .form-group {
+    margin-bottom: 0;
+}
+
+.volume-quantity-section label {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.volume-quantity-section input {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .scale-method-options {

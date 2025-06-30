@@ -322,8 +322,12 @@ class VolumeCalculator {
                     
                     document.getElementById('volume-scale-factor').textContent = `${scaleFactor}`;
                     document.getElementById('volume-comparison').style.display = 'block';
+                    
+                    // Mostrar sección de cantidad para el nuevo volumen
+                    document.getElementById('volume-quantity-section').style.display = 'block';
                 } catch (error) {
                     document.getElementById('volume-comparison').style.display = 'none';
+                    document.getElementById('volume-quantity-section').style.display = 'none';
                 }
             }
         }
@@ -358,5 +362,6 @@ class VolumeCalculator {
     clearNewCalculatedVolume() {
         document.getElementById('new-calculated-volume').style.display = 'none';
         document.getElementById('volume-comparison').style.display = 'none';
+        document.getElementById('volume-quantity-section').style.display = 'none';
     }
 } 
